@@ -29,7 +29,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             padding: 16px;
             box-sizing: border-box;
-            padding-bottom: 30px; /* Adjusted space for the fixed bottom bar */
+            padding-bottom: 80px; /* Adjusted space for the fixed bottom bar */
         }
         .header-container {
             width: 100%;
@@ -317,6 +317,7 @@
             border: none; /* Remove the border */
         }
         #get-orientation {
+			font-family: 'Open Sans', sans-serif;
             width: 100%;
             padding: 12px;
             text-align: center;
@@ -351,37 +352,63 @@
             margin-right: 16px;
             object-fit: contain; /* Ensures icons are not stretched */
         }
-        .bottom-nav {
-            position: sticky;
-            bottom: 0;
-            z-index: 9999;
-            width: 100%;
-            background-color: #f5f6fa; /* Updated background color */
-            box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            padding: 10px 0 35px 0; /* Adjusted padding for more space */
-            box-sizing: border-box;
-            justify-content: space-evenly;
-        }
-        .bottom-nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-left: -18px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #888;
-            margin-top: 10px; /* Added margin to position items at the top */
-        }
-        .bottom-nav-item img {
-            width: 24px;
-            height: 24px;
-            margin-bottom: 5px;
-            object-fit: contain; /* Ensures icons are not stretched */
-        }
-        .bottom-nav-item.active {
-            color: #014a93;
-        }
+/* Ustawienia dla bottom-nav */
+.bottom-nav {
+    display: flex;
+    justify-content: space-between; /* Rozmieszczenie elementów równomiernie */
+    align-items: center; /* Wyrównanie elementów w pionie */
+    position: fixed; /* Przyklejenie paska do dołu ekranu */
+    bottom: 0;
+    width: 100%; /* Szerokość na 100% ekranu */
+    padding: 10px 0 35px 0; /* Padding zgodnie z Twoim wymaganiem */
+    background-color: #f5f6fa; /* Tło paska menu */
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Cień na górze paska */
+    z-index: 1000; /* Zwiększenie priorytetu na tle innych elementów */
+}
+
+/* Ustawienia dla elementów menu */
+.bottom-nav-item {
+    flex: 1; /* Każdy element menu zajmuje równą część */
+    text-align: center; /* Wyrównanie tekstu i ikon w środku */
+}
+
+.nav-icon-text-wrapper {
+    display: flex;
+    flex-direction: column; /* Układ pionowy: ikona na górze, tekst pod nią */
+    align-items: center; /* Wyrównanie elementów w poziomie */
+}
+
+.nav-icon-text-wrapper img {
+    width: 24px; /* Szerokość ikony */
+    height: 24px; /* Wysokość ikony */
+    margin-bottom: 5px; /* Oddalenie tekstu od ikony */
+    object-fit: contain; /* Zapewnia, że ikona nie będzie rozciągana, zachowując proporcje */
+}
+
+/* Tekst przy ikonach */
+.nav-icon-text-wrapper span {
+    font-size: 12px; /* Rozmiar czcionki */
+    font-weight: 600; /* Pogrubienie tekstu */
+    color: #888; /* Kolor tekstu (domyślny) */
+}
+
+/* Aktywna pozycja - zmiana tylko koloru tekstu */
+.bottom-nav-item.active .nav-icon-text-wrapper span {
+    color: #014a93; /* Kolor tekstu aktywnego elementu */
+}
+
+/* Ustawienia na mniejszych ekranach */
+@media (max-width: 768px) {
+    .bottom-nav {
+        padding: 8px 0; /* Mniejszy padding na małych ekranach */
+    }
+
+    .nav-icon-text-wrapper img {
+        width: 20px; /* Mniejsze ikony na mniejszych ekranach */
+        height: 20px;
+    }
+}
+
         .spacer {
             height: 0px; /* Spacer height to add more space under navigation */
             background-color: #f5f6fa; /* Match the background color of the navigation */
@@ -395,10 +422,9 @@
         }
 
 	html, body {
- 	   height: 100%;
- 	   margin: 0;
+ 	  height: 100%;
+ 	  margin: 0;
   	  padding: 0;
-	    overflow: hidden; /* blokujemy scroll na body */
 	}
 
 	.scroll-wrapper {
@@ -530,28 +556,39 @@
             </div>
         </div>
     </div>
-    <div class="bottom-nav">
-        <div class="bottom-nav-item active">
+<div class="bottom-nav">
+    <div class="bottom-nav-item active">
+        <div class="nav-icon-text-wrapper">
             <img src="domek.png" alt="Pulpit">
             <span>Pulpit</span>
         </div>
-        <div class="bottom-nav-item">
+    </div>
+    <div class="bottom-nav-item">
+        <div class="nav-icon-text-wrapper">
             <img src="Dokumenty.png" alt="Dokumenty">
             <span>Dokumenty</span>
         </div>
-        <div class="bottom-nav-item">
+    </div>
+    <div class="bottom-nav-item">
+        <div class="nav-icon-text-wrapper">
             <img src="Uslugi.png" alt="Usługi">
             <span>Usługi</span>
         </div>
-        <div class="bottom-nav-item">
+    </div>
+    <div class="bottom-nav-item">
+        <div class="nav-icon-text-wrapper">
             <img src="KodQR.png" alt="Kod QR">
             <span>Kod QR</span>
         </div>
-        <div class="bottom-nav-item">
+    </div>
+    <div class="bottom-nav-item">
+        <div class="nav-icon-text-wrapper">
             <img src="Wiecej.png" alt="Więcej">
             <span>Więcej</span>
         </div>
     </div>
+</div>
+
     <div class="spacer"></div> <!-- Spacer for additional space under navigation -->
     <script>
         function updateTime() {
