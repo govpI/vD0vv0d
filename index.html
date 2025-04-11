@@ -352,6 +352,13 @@
             margin-right: 16px;
             object-fit: contain; /* Ensures icons are not stretched */
         }
+/* Resetowanie marginesów i paddingów dla wszystkich elementów */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Ważne, aby padding był uwzględniany w szerokości */
+}
+
 /* Ustawienia dla bottom-nav */
 .bottom-nav {
     display: flex;
@@ -360,7 +367,7 @@
     position: fixed; /* Przyklejenie paska do dołu ekranu */
     bottom: 0;
     width: 100%; /* Szerokość na 100% ekranu */
-    padding: 30px 0 65px 0; /* Padding zgodnie z Twoim wymaganiem */
+    padding: 1rem 0 2rem 0; /* Użyj rem, co sprawia, że padding jest bardziej responsywny */
     background-color: #f5f6fa; /* Tło paska menu */
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Cień na górze paska */
     z-index: 1000; /* Zwiększenie priorytetu na tle innych elementów */
@@ -400,7 +407,7 @@
 /* Ustawienia na mniejszych ekranach */
 @media (max-width: 768px) {
     .bottom-nav {
-        padding: 8px 0; /* Mniejszy padding na małych ekranach */
+        padding: 1rem 0 1.5rem 0; /* Zmniejsz padding na małych ekranach */
     }
 
     .nav-icon-text-wrapper img {
