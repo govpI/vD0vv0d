@@ -123,6 +123,10 @@
             background-color: #ffffff;
             box-sizing: border-box;
         }
+		
+		.document-section p:first-of-type {
+            padding-top: 16px;
+        }
         .document-images {
             display: flex;
             flex-direction: column;
@@ -234,14 +238,16 @@
             box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15); /* More visible shadow */
         }
         .validity-icon {
-            width: 30px;
-            height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-left: 0px;
-            margin-right: 16px;
+            margin-right: 12px;
         }
+		.validity-icon img {
+			width: 22px;
+            height: 22px;
+		}
         .validity-text {
             font-family: "Open Sans", sans-serif;
             font-weight: 650;
@@ -275,8 +281,8 @@
             align-items: center;
         }
         .action-button .icon-text img {
-            width: 30px; /* 28px Updated size for larger icons */
-            height: 30px; /* 28px Updated size for larger icons */
+            width: 22px; /* 28px Updated size for larger icons */
+            height: 22px; /* 28px Updated size for larger icons */
             margin-right: 16px;
             object-fit: contain; /* Ensures icons are not stretched */
         }
@@ -347,8 +353,8 @@
             align-items: center;
         }
         .delete-button .icon-text img {
-            width: 20px; /* 28px Updated size for larger icons */
-            height: 20px; /* 28px Updated size for larger icons */
+            width: 18px; /* 28px Updated size for larger icons */
+            height: 18px; /* 28px Updated size for larger icons */
             margin-right: 16px;
             object-fit: contain; /* Ensures icons are not stretched */
         }
@@ -451,6 +457,37 @@
         background-color: #f7f8fc;
         /* Dodaj tu dowolne efekty fullscreen jeśli chcesz */
 	}
+	
+.popup-error {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffe0e0; /* Jasna czerwień */
+    color: #b00000;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: 1px solid #ff0000; /* Czerwona obramówka */
+    font-family: "Open Sans", sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    opacity: 1;
+    transition: opacity 0.2s ease-in-out;
+    z-index: 9999;
+    text-align: center;
+    max-width: 300px;
+    box-shadow: 0 2px 4px rgba(255, 0, 0, 0.2); /* Malutki cień */
+}
+
+/* Fade-in trigger: zaczyna z przezroczystością */
+.popup-hidden {
+    opacity: 0;
+}
+
+.popup-fadeout {
+    opacity: 0;
+}
+
 </style>
 </head>
 <body>
@@ -549,13 +586,15 @@
                 <img src="arrowicon.svg" alt="Arrow Icon" class="arrow-icon" style="transform: rotate(90deg);">
             </div>
         </div>
-        <div class="last-update">
-            <div>
-                <div class="last-update-text">Ostatnia aktualizacja</div>
-                <div class="last-update-date" id="data">11.04.2025</div>
-            </div>
-            <button id="aktualizuj">Aktualizuj</button>
-        </div>
+		
+<div class="last-update">
+    <div>
+        <div class="last-update-text">Ostatnia aktualizacja</div>
+        <div class="last-update-date" id="last-update-date">11.04.2025</div>
+    </div>
+    <button id="aktualizuj">Aktualizuj</button>
+</div>
+
         <div class="delete-button">
             <div class="icon-text">
                 <img src="delete.png" alt="Delete Icon">
@@ -598,129 +637,181 @@
 
     <div class="spacer"></div> <!-- Spacer for additional space under navigation -->
     <script>
-        function updateTime() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const year = now.getFullYear();
-            const timeString = `Czas: ${hours}:${minutes}:${seconds} ${day}.${month}.${year}`;
-            document.getElementById('data').textContent = timeString;
+// Funkcja do formatowania daty w formacie DD.MM.YYYY
+function formatDate(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Miesiące są liczone od 0
+    const year = date.getFullYear();
+    return `${day}.${month}.${year}`;
+}
+
+// Zegar - aktualizacja czasu co sekundę
+function updateTime() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    const timeString = `Czas: ${hours}:${minutes}:${seconds} ${day}.${month}.${year}`;
+    document.getElementById('data').textContent = timeString;
+}
+
+// Funkcja aktualizacji daty w elemencie 'last-update-date' po kliknięciu przycisku
+document.addEventListener('DOMContentLoaded', function() {
+    // Zegar
+    setInterval(updateTime, 1000); // Zaktualizuj czas co sekundę
+    updateTime(); // Uruchom zegar natychmiast
+
+    // Funkcja, która ustawi dzisiejszą datę po kliknięciu przycisku
+    document.getElementById("aktualizuj").addEventListener("click", function() {
+        const today = new Date(); // Pobierz bieżącą datę
+        const formattedDate = formatDate(today); // Sformatuj datę
+        document.getElementById("last-update-date").textContent = formattedDate; // Ustaw datę w elemencie #last-update-date
+    });
+
+    // Device orientation permission and event listener
+    async function getOrientation() {
+        // Sprawdzenie, czy urządzenie obsługuje API orientacji
+        if (!window.DeviceOrientationEvent) {
+            return alert("Twoje urządzenie lub przeglądarka nie obsługują zdarzenia DeviceOrientation");
         }
 
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        // Detect if running as a Web Clip and apply specific styles
-        if (window.navigator.standalone) {
-            document.body.classList.add('standalone');
+        // Wymagana zgoda na urządzeniach iOS i Android 6.0+
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+            try {
+                const response = await DeviceOrientationEvent.requestPermission();
+                if (response !== 'granted') {
+                    return alert("Musisz udzielić dostępu do czujnika urządzenia");
+                }
+            } catch (error) {
+                return alert("Błąd podczas próby uzyskania zgody na orientację urządzenia: " + error.message);
+            }
         }
 
-        // Swipe functionality
-        const infoSection = document.getElementById('info-section');
-        const blueSection = document.getElementById('blue-section');
-        const leftIcon = document.getElementById('left-icon');
-        const rightIcon = document.getElementById('right-icon');
-        const leftIconBlue = document.getElementById('left-icon-blue');
-        const rightIconBlue = document.getElementById('right-icon-blue');
-        const closeIcon = document.getElementById('close-icon');
+        // Ukryj przycisk po uzyskaniu zgody
+        document.getElementById('get-orientation').style.display = 'none';
 
-        let startX;
+        // Dodanie nasłuchiwacza na orientację urządzenia
+        window.addEventListener("deviceorientation", function(e) {
+            let eagleContainer = document.getElementById('eagle-container');
+            let alpha = e.alpha;
+            let beta = e.beta;
+            let gamma = e.gamma;
 
-        infoSection.addEventListener('touchstart', (e) => {
-            startX = e.touches[0].clientX;
+            // Zmiana filtrów w zależności od kąta orientacji
+            let hueRotate = alpha % 360;
+            let brightness = 1 + Math.abs(beta / 1440);  // Dopasowanie jasności
+            let contrast = 1 + Math.abs(gamma / 140);   // Dopasowanie kontrastu
+            let saturate = 1.5 + Math.abs(gamma / 5);   // Dopasowanie nasycenia
+
+            eagleContainer.style.filter = `hue-rotate(${hueRotate}deg) brightness(${brightness}) contrast(${contrast}) saturate(${saturate})`;
         });
+    }
 
-        infoSection.addEventListener('touchend', (e) => {
-            const endX = e.changedTouches[0].clientX;
-            if (startX > endX + 50) { // Swipe left
-                infoSection.style.display = 'none';
-                blueSection.style.display = 'block';
-            }
-        });
+    document.getElementById('get-orientation').addEventListener('click', getOrientation);
 
-        blueSection.addEventListener('touchstart', (e) => {
-            startX = e.touches[0].clientX;
-        });
+    // Wykrywanie, czy strona jest uruchomiona jako Web Clip (np. na iOS)
+    if (window.navigator.standalone) {
+        document.body.classList.add('standalone');
+    }
 
-        blueSection.addEventListener('touchend', (e) => {
-            const endX = e.changedTouches[0].clientX;
-            if (startX < endX - 50) { // Swipe right
-                blueSection.style.display = 'none';
-                infoSection.style.display = 'block';
-            }
-        });
+    // Funkcja do przesuwania sekcji
+    const infoSection = document.getElementById('info-section');
+    const blueSection = document.getElementById('blue-section');
+    const leftIcon = document.getElementById('left-icon');
+    const rightIcon = document.getElementById('right-icon');
+    const leftIconBlue = document.getElementById('left-icon-blue');
+    const rightIconBlue = document.getElementById('right-icon-blue');
+    const closeIcon = document.getElementById('close-icon');
+    let startX;
 
-        rightIcon.addEventListener('click', () => {
+    infoSection.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+    });
+
+    infoSection.addEventListener('touchend', (e) => {
+        const endX = e.changedTouches[0].clientX;
+        if (startX > endX + 50) { // Przesunięcie w lewo
             infoSection.style.display = 'none';
             blueSection.style.display = 'block';
-        });
+        }
+    });
 
-        leftIconBlue.addEventListener('click', () => {
+    blueSection.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+    });
+
+    blueSection.addEventListener('touchend', (e) => {
+        const endX = e.changedTouches[0].clientX;
+        if (startX < endX - 50) { // Przesunięcie w prawo
             blueSection.style.display = 'none';
             infoSection.style.display = 'block';
-        });
-
-        closeIcon.addEventListener('click', () => {
-            blueSection.style.display = 'none';
-        });
-
-        // Device orientation permission and event listener
-        async function getOrientation(){
-            // Check if the current device and browser support device orientation API
-            if (!window.DeviceOrientationEvent) {
-                return alert("Your current device or browser does not support the DeviceOrientation event");
-            }
-
-            // For iOS 13+ and Android 6.0+ (Chrome), you need to request permission explicitly
-            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-                try {
-                    const response = await DeviceOrientationEvent.requestPermission();
-                    if (response !== 'granted') {
-                        return alert("You must grant access to the device's sensor for this demo");
-                    }
-                } catch (error) {
-                    return alert("Error requesting permission for device orientation: " + error.message);
-                }
-            }
-
-            // Hide the button after permission is granted
-            document.getElementById('get-orientation').style.display = 'none';
-
-            // Add the device orientation event listener
-            window.addEventListener("deviceorientation", function(e){
-                let eagleContainer = document.getElementById('eagle-container');
-                let alpha = e.alpha;
-                let beta = e.beta;
-                let gamma = e.gamma;
-
-                // Change the filter based on the orientation angles
-                let hueRotate = alpha % 360;
-                let brightness = 1 + Math.abs(beta / 1440);  // Adjusted for less white
-                let contrast = 1 + Math.abs(gamma / 140);   // Adjusted for less intensity
-                let saturate = 1.5 + Math.abs(gamma / 5);   // Adjusted for more colors
-
-                eagleContainer.style.filter = `hue-rotate(${hueRotate}deg) brightness(${brightness}) contrast(${contrast}) saturate(${saturate})`;
-            });
         }
-        document.getElementById('get-orientation').addEventListener('click', getOrientation);
+    });
 
-        // Add a class to the body element if the user agent is Android
-        if (/Android/i.test(navigator.userAgent)) {
-            document.body.classList.add('android');
+    rightIcon.addEventListener('click', () => {
+        infoSection.style.display = 'none';
+        blueSection.style.display = 'block';
+    });
+
+    leftIconBlue.addEventListener('click', () => {
+        blueSection.style.display = 'none';
+        infoSection.style.display = 'block';
+    });
+
+    closeIcon.addEventListener('click', () => {
+        blueSection.style.display = 'none';
+    });
+
+    // Obsługa pełnoekranowego trybu
+    document.body.addEventListener('click', async () => {
+        if (!document.fullscreenElement) {
+            try {
+                await document.documentElement.requestFullscreen();
+                document.body.classList.add('fullscreen-mode');
+            } catch (err) {
+                console.error("Nie udało się wejść w tryb pełnoekranowy:", err);
+            }
         }
-	document.body.addEventListener('click', async () => {
- 	   if (!document.fullscreenElement) {
-   	     try {
-  	          await document.documentElement.requestFullscreen();
- 	           document.body.classList.add('fullscreen-mode');
-  	      } catch (err) {
- 	           console.error("Nie udało się wejść w tryb pełnoekranowy:", err);
-  	      }
-  	  }
-	});
+    });
+
+    // Dodanie klasy do elementu body, jeśli użytkownik korzysta z Androida
+    if (/Android/i.test(navigator.userAgent)) {
+        document.body.classList.add('android');
+    }
+});
+    // Funkcja tworząca i pokazująca popup z błędem
+function showNetworkErrorPopup() {
+    const popup = document.createElement('div');
+    popup.classList.add('popup-error', 'popup-hidden'); // Startowo ukryty
+    popup.textContent = 'Błąd Sieci – Spróbuj Ponownie Później';
+
+    document.body.appendChild(popup);
+
+    // Fade-in po jednej klatce
+    requestAnimationFrame(() => {
+        popup.classList.remove('popup-hidden');
+    });
+
+    // Fade-out po 1.5 sekundy
+    setTimeout(() => {
+        popup.classList.add('popup-fadeout');
+    }, 1500);
+
+    // Usuń z DOM po 2 sekundy
+    setTimeout(() => {
+        popup.remove();
+    }, 2000);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.action-button, .delete-button').forEach(button => {
+        button.addEventListener('click', showNetworkErrorPopup);
+    });
+});
+
     </script>
  </div>
 </body>
